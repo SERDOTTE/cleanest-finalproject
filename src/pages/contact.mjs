@@ -83,7 +83,7 @@ export function initContact() {
   if (draft) {
     const form = document.getElementById('contactForm');
     if (form) {
-      if (draft.name)  form.name.value  = draft.name;
+      if (draft.name) form.name.value = draft.name;
       if (draft.email) form.email.value = draft.email;
       if (draft.phone) form.phone.value = draft.phone;
       const banner = document.getElementById('recovery-banner');
@@ -96,7 +96,7 @@ export function initContact() {
     const form = document.getElementById('contactForm');
     if (!form) return;
     saveSession('contactDraft', {
-      name:  form.name.value,
+      name: form.name.value,
       email: form.email.value,
       phone: form.phone.value,
     });
@@ -106,7 +106,7 @@ export function initContact() {
   document.querySelector('.confirm')?.addEventListener('click', () => {
     confirmedDate = document.getElementById('date')?.value ?? '';
     confirmedTime = document.getElementById('time')?.value ?? '';
-    const slotEl  = document.getElementById('confirmed-slot');
+    const slotEl = document.getElementById('confirmed-slot');
     if (confirmedDate && confirmedTime) {
       if (slotEl) slotEl.textContent = `Confirmed: ${confirmedDate} at ${confirmedTime}`;
     } else {
@@ -125,16 +125,16 @@ export function initContact() {
     }
 
     const payload = {
-      name:         form.name.value.trim(),
-      email:        form.email.value.trim(),
-      phone:        form.phone.value.trim(),
-      services:     [...form.querySelectorAll('input[name="service"]:checked')].map((cb) => cb.value),
-      date:         confirmedDate || document.getElementById('date')?.value || '',
-      time:         confirmedTime || document.getElementById('time')?.value || '',
-      address:      document.getElementById('address')?.value.trim()      || '',
-      number:       document.getElementById('number')?.value.trim()       || '',
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      services: [...form.querySelectorAll('input[name="service"]:checked')].map((cb) => cb.value),
+      date: confirmedDate || document.getElementById('date')?.value || '',
+      time: confirmedTime || document.getElementById('time')?.value || '',
+      address: document.getElementById('address')?.value.trim() || '',
+      number: document.getElementById('number')?.value.trim() || '',
       neighborhood: document.getElementById('neighborhood')?.value.trim() || '',
-      city:         document.getElementById('city')?.value.trim()         || '',
+      city: document.getElementById('city')?.value.trim() || '',
     };
 
     try {
@@ -158,6 +158,6 @@ export function initContact() {
 function showFeedback(message, type = 'info') {
   const el = document.getElementById('form-feedback');
   if (!el) return;
-  el.textContent  = message;
-  el.className    = `form-feedback form-feedback--${type}`;
+  el.textContent = message;
+  el.className = `form-feedback form-feedback--${type}`;
 }

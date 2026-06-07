@@ -1,183 +1,182 @@
 /* Exemplo de layout responsivo para duas colunas */
 .contact-container {
-    display: flex;
-    flex-direction: row;
-    gap: 32px;
-    justify-content: center;
-    align-items: flex-start;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 16px;
-    background: var(--secondary-color);
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(73,35,107,0.07);
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  background: var(--secondary-color);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(73, 35, 107, 0.07);
 }
 
-.contact-form, .contact-schedule {
-    flex: 1 1 0;
-    /* background: #fff; */
-    border-radius: 12px;
-    padding: 24px;
-    
+.contact-form,
+.contact-schedule {
+  flex: 1 1 0;
+  /* background: #fff; */
+  border-radius: 12px;
+  padding: 24px;
 }
 
 /* Responsivo: empilha em telas pequenas */
 @media (max-width: 800px) {
-    .contact-container {
-        flex-direction: column;
-        gap: 18px;
-        padding: 16px 4px;
-    }
+  .contact-container {
+    flex-direction: column;
+    gap: 18px;
+    padding: 16px 4px;
+  }
 }
 
 .contact-schedule {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .contact-schedule-row {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-end;
 }
 
 .contact-schedule-row > div {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.contact-schedule input[type="date"] {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #bbb;
-    font-size: 1rem;
-    background: #fff;
-    color: #222;
-    margin-bottom: 12px;
-    cursor: pointer;
+.contact-schedule input[type='date'] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
+  margin-bottom: 12px;
+  cursor: pointer;
 }
 
 /* Opcional: destaca o label */
-.contact-schedule label[for="date"] {
-    font-weight: bold;
-    margin-top: 12px;
-    display: block;
+.contact-schedule label[for='date'] {
+  font-weight: bold;
+  margin-top: 12px;
+  display: block;
 }
 
 .contact-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .contact-form label,
 .contact-form input,
 .contact-form fieldset,
 .contact-form button {
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contact-form fieldset {
-    border: 1px solid #bbb;
-    border-radius: 8px;
-    padding: 12px 10px;
-    margin-bottom: 8px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 12px 10px;
+  margin-bottom: 8px;
 }
 
 .contact-form legend {
-    font-weight: bold;
-    margin-bottom: 6px;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
-.contact-form input[type="text"],
-.contact-form input[type="email"],
-.contact-form input[type="tel"] {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #bbb;
-    font-size: 1rem;
-    background: #fff;
-    color: #222;
+.contact-form input[type='text'],
+.contact-form input[type='email'],
+.contact-form input[type='tel'] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
 }
 
-.contact-form button[type="submit"] {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    background: var(--accent1-color, #032f53);
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
+.contact-form button[type='submit'] {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent1-color, #032f53);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.contact-form button[type="submit"]:hover {
-    background: var(--accent2-color, #cebbe0);
-    color: #222;
+.contact-form button[type='submit']:hover {
+  background: var(--accent2-color, #cebbe0);
+  color: #222;
 }
 
 /* Ajuste para os checkboxes do fieldset */
 .contact-form fieldset label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: normal;
-    margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: normal;
+  margin-bottom: 4px;
 }
 
-.contact-form input[type="checkbox"] {
-    width: auto;
-    margin-right: 8px;
+.contact-form input[type='checkbox'] {
+  width: auto;
+  margin-right: 8px;
 }
 
 .contact-submit-center {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }
 
-.contact-submit-center button[type="submit"],
+.contact-submit-center button[type='submit'],
 .contact-submit-center button.confirm {
-    padding: 10px 32px;
-    border-radius: 6px;
-    border: none;
-    background: var(--accent1-color, #032f53);
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-bottom: 15px;
+  padding: 10px 32px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent1-color, #032f53);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 15px;
 }
 
-
-.contact-submit-center button[type="submit"]:hover,
+.contact-submit-center button[type='submit']:hover,
 .contact-submit-center button.confirm:hover {
-    background: var(--accent2-color, #cebbe0);
-    color: #f8f8f8;
+  background: var(--accent2-color, #cebbe0);
+  color: #f8f8f8;
 }
 
 /* Responsivo: empilha data e hora em telas pequenas */
 @media (max-width: 600px) {
-    .contact-schedule-row {
-        flex-direction: column;
-        gap: 8px;
-    }
+  .contact-schedule-row {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 .address-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .address-fields label,
 .address-fields input {
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
 }

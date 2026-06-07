@@ -104,12 +104,14 @@ finalproject/
 ## Roadmap (per project proposal)
 
 ### Week 6 — Business Logic & Data Persistence
+
 - [ ] `calculator.mjs` — Full pricing wizard UI
 - [ ] `storage.mjs` — Cart abandonment toast/banner
 - [ ] `booking.mjs` — Multi-step wizard with progress bar
 - [ ] Dynamic review hub
 
 ### Week 7 — API Integrations & Deployment
+
 - [ ] `api.mjs` — Google Maps geocoding + service area check
 - [ ] `api.mjs` — Google Calendar availability + event creation
 - [ ] Automatic PDF quote generator

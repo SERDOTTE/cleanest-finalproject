@@ -1,4 +1,4 @@
-import { services } from "../data/services-list.mjs";
+import { services } from '../data/services-list.mjs';
 
 const showHere = document.getElementById('services-list');
 
@@ -18,8 +18,8 @@ function createModal() {
   document.body.appendChild(modal);
 
   // Fechar ao clicar no X ou fora do conteúdo
-  modal.querySelector('.service-modal-close').onclick = () => modal.style.display = 'none';
-  modal.onclick = e => {
+  modal.querySelector('.service-modal-close').onclick = () => (modal.style.display = 'none');
+  modal.onclick = (e) => {
     if (e.target === modal) modal.style.display = 'none';
   };
 }
@@ -32,24 +32,26 @@ function showModal(name, desc) {
 }
 
 function displayServices(services) {
-  services.filter(service => service && service.name).forEach(service => {
-    const card = document.createElement('div');
-    card.className = 'service-card';
+  services
+    .filter((service) => service && service.name)
+    .forEach((service) => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
 
-    const img = document.createElement('img');
-    img.src = `images/${service.photo_link}`;
-    img.alt = service.name;
-    img.style.cursor = 'pointer';
-    img.addEventListener('click', () => showModal(service.name, service.description));
+      const img = document.createElement('img');
+      img.src = `images/${service.photo_link}`;
+      img.alt = service.name;
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', () => showModal(service.name, service.description));
 
-    const h2 = document.createElement('h2');
-    h2.textContent = service.name;
+      const h2 = document.createElement('h2');
+      h2.textContent = service.name;
 
-    card.appendChild(img);
-    card.appendChild(h2);
+      card.appendChild(img);
+      card.appendChild(h2);
 
-    showHere.appendChild(card);
-  });
+      showHere.appendChild(card);
+    });
 }
 
 if (showHere) {

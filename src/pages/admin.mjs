@@ -110,7 +110,9 @@ function renderRows(submissions) {
     .map((item) => {
       const services = Array.isArray(item.services) ? item.services.join(', ') : '';
       const schedule = item.date && item.time ? `${item.date} ${item.time}` : '-';
-      const address = [item.address, item.number, item.neighborhood, item.city].filter(Boolean).join(', ');
+      const address = [item.address, item.number, item.neighborhood, item.city]
+        .filter(Boolean)
+        .join(', ');
       const received = item.receivedAt ? new Date(item.receivedAt).toLocaleString() : '-';
 
       return `

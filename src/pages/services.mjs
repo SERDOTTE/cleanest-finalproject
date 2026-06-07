@@ -39,10 +39,10 @@ export function renderServices() {
 }
 
 export function initServices() {
-  const modal     = document.getElementById('service-modal');
-  const titleEl   = document.getElementById('modal-service-title');
-  const descEl    = document.getElementById('modal-service-desc');
-  const closeBtn  = modal?.querySelector('.service-modal-close');
+  const modal = document.getElementById('service-modal');
+  const titleEl = document.getElementById('modal-service-title');
+  const descEl = document.getElementById('modal-service-desc');
+  const closeBtn = modal?.querySelector('.service-modal-close');
 
   if (!modal || !titleEl || !descEl) return;
 
@@ -50,7 +50,7 @@ export function initServices() {
     const service = services.find((s) => s.name === serviceName);
     if (!service) return;
     titleEl.textContent = service.name;
-    descEl.textContent  = service.description;
+    descEl.textContent = service.description;
     modal.style.display = 'flex';
   }
 
@@ -66,6 +66,10 @@ export function initServices() {
   });
 
   closeBtn?.addEventListener('click', closeModal);
-  closeBtn?.addEventListener('keydown', (e) => { if (e.key === 'Enter') closeModal(); });
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  closeBtn?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') closeModal();
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
 }

@@ -6,11 +6,11 @@ import { renderAdmin, initAdmin } from './pages/admin.mjs';
 
 /** Route map: hash → { render, init } */
 const routes = {
-  home:     { render: renderHome,     init: null },
+  home: { render: renderHome, init: null },
   services: { render: renderServices, init: initServices },
-  about:    { render: renderAbout,    init: null },
-  contact:  { render: renderContact,  init: initContact },
-  admin:    { render: renderAdmin,    init: initAdmin },
+  about: { render: renderAbout, init: null },
+  contact: { render: renderContact, init: initContact },
+  admin: { render: renderAdmin, init: initAdmin },
 };
 
 const DEFAULT_ROUTE = 'home';
@@ -30,7 +30,7 @@ function navigate(routeKey) {
   app.innerHTML = route.render();
 
   // Sync active link state
-  document.querySelectorAll('[data-route]').forEach(link => {
+  document.querySelectorAll('[data-route]').forEach((link) => {
     link.classList.toggle('active', link.dataset.route === routeKey);
   });
 
@@ -43,7 +43,7 @@ export function initRouter() {
   window.addEventListener('hashchange', () => navigate(getRouteKey()));
 
   // Intercept clicks on nav links before hashchange fires to avoid double render
-  document.querySelectorAll('[data-route]').forEach(link => {
+  document.querySelectorAll('[data-route]').forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const key = link.dataset.route;

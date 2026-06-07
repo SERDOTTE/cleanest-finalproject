@@ -2,9 +2,12 @@ import express from 'express';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import cors from 'cors';
 
-const app  = express();
+const app = express();
 const PORT = 3000;
-const DATA_FILE = new URL('./submissions.json', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1');
+const DATA_FILE = new URL('./submissions.json', import.meta.url).pathname.replace(
+  /^\/([A-Z]:)/,
+  '$1'
+);
 
 app.use(cors());
 app.use(express.json());

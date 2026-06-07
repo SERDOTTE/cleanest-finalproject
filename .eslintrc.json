@@ -5,20 +5,12 @@
     "node": true,
     "es2022": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:import/recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:import/recommended", "prettier"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "ignorePatterns": [
-    "dist/",
-    "node_modules/",
-    "public/"
-  ],
+  "ignorePatterns": ["dist/", "node_modules/", "public/"],
   "rules": {
     "no-unused-vars": [
       "warn",

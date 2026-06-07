@@ -10,10 +10,10 @@
 import { saveSession, loadSession } from './storage.mjs';
 
 export const WIZARD_STEPS = {
-  ITEM_SELECTION:    1,
+  ITEM_SELECTION: 1,
   ADDRESS_VALIDATION: 2,
-  DATETIME_CHOICE:   3,
-  CONFIRMATION:      4,
+  DATETIME_CHOICE: 3,
+  CONFIRMATION: 4,
 };
 
 const BOOKING_DRAFT_KEY = 'bookingDraft';
@@ -24,12 +24,12 @@ const BOOKING_DRAFT_KEY = 'bookingDraft';
  */
 export function createBookingState() {
   return {
-    step:    WIZARD_STEPS.ITEM_SELECTION,
-    items:   [],   // [{ service, size, soilDepth }]
+    step: WIZARD_STEPS.ITEM_SELECTION,
+    items: [], // [{ service, size, soilDepth }]
     address: null, // { street, number, neighborhood, city, lat, lng }
-    date:    null,
-    time:    null,
-    quote:   null, // Result from calculator.mjs calculateQuote()
+    date: null,
+    time: null,
+    quote: null, // Result from calculator.mjs calculateQuote()
   };
 }
 

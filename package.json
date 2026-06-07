@@ -1,0 +1,28 @@
+{
+  "name": "cleannest",
+  "version": "1.0.0",
+  "description": "CleanNest - Mattress & Upholstery Cleaning Services",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "preview": "vite preview",
+    "server": "node server/server.js",
+    "lint": "eslint . --ext .js,.mjs",
+    "lint:fix": "eslint . --ext .js,.mjs --fix",
+    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,mjs,css,md}\"",
+    "format:check": "prettier --ignore-path ./.gitignore --check \"./**/*.{html,json,js,mjs,css,md}\""
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.6.2",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

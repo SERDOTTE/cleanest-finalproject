@@ -1,3 +1,5 @@
+import { renderReviewHub, initReviewHub } from '../modules/reviews.mjs';
+
 export function renderHome() {
   return `
     <section class="hero">
@@ -32,6 +34,11 @@ export function renderHome() {
           </div>
         </div>
       </div>
+      ${renderReviewHub()}
     </main>
   `;
+}
+
+export function initHome() {
+  initReviewHub();
 }

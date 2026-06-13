@@ -2,12 +2,11 @@
  * Booking & Scheduling Module
  * Manages multi-step wizard state and slot validation.
  *
- * TODO (Week 6): Implement full wizard UI rendering and step transitions.
  * TODO (Week 7): Integrate Google Calendar for real-time slot availability.
  * TODO (Week 7): Create calendar event on booking confirmation.
  */
 
-import { saveSession, loadSession } from './storage.mjs';
+import { saveSession, loadSession, clearSession } from './storage.mjs';
 
 export const WIZARD_STEPS = {
   ITEM_SELECTION: 1,
@@ -26,10 +25,40 @@ export function createBookingState() {
   return {
     step: WIZARD_STEPS.ITEM_SELECTION,
     items: [], // [{ service, size, soilDepth }]
-    address: null, // { street, number, neighborhood, city, lat, lng }
-    date: null,
-    time: null,
+    address: {
+      street: '',
+      number: '',
+      neighborhood: '',
+      city: '',
+    },
+    distanceKm: 0,
+    date: '',
+    time: '',
+    customer: {
+      name: '',
+      email: '',
+      phone: '',
+    },
     quote: null, // Result from calculator.mjs calculateQuote()
+  };
+}
+
+function normalizeBookingState(state = {}) {
+  const base = createBookingState();
+  const address = { ...base.address, ...(state.address ?? {}) };
+  const customer = { ...base.customer, ...(state.customer ?? {}) };
+  const distanceKm = Number.isFinite(Number(state.distanceKm)) ? Math.max(0, Number(state.distanceKm)) : 0;
+
+  return {
+    ...base,
+    ...state,
+    step: Number.isFinite(Number(state.step)) ? Number(state.step) : base.step,
+    items: Array.isArray(state.items) ? state.items : [],
+    address,
+    customer,
+    distanceKm,
+    date: state.date ?? '',
+    time: state.time ?? '',
   };
 }
 
@@ -38,7 +67,7 @@ export function createBookingState() {
  * @returns {object}
  */
 export function loadBookingDraft() {
-  return loadSession(BOOKING_DRAFT_KEY) ?? createBookingState();
+  return normalizeBookingState(loadSession(BOOKING_DRAFT_KEY) ?? createBookingState());
 }
 
 /**
@@ -46,7 +75,26 @@ export function loadBookingDraft() {
  * @param {object} state
  */
 export function saveBookingDraft(state) {
-  saveSession(BOOKING_DRAFT_KEY, state);
+  const normalized = normalizeBookingState(state);
+  saveSession(BOOKING_DRAFT_KEY, normalized);
+  return normalized;
+}
+
+/**
+ * Merge partial updates into booking state and persist.
+ * @param {object} state
+ * @param {object} patch
+ * @returns {object}
+ */
+export function updateBookingState(state, patch = {}) {
+  const merged = {
+    ...state,
+    ...patch,
+    address: { ...(state.address ?? {}), ...(patch.address ?? {}) },
+    customer: { ...(state.customer ?? {}), ...(patch.customer ?? {}) },
+  };
+
+  return saveBookingDraft(merged);
 }
 
 /**
@@ -59,9 +107,18 @@ export function advanceStep(state) {
   if (errors.length > 0) return { state, errors };
 
   const nextStep = Math.min(state.step + 1, WIZARD_STEPS.CONFIRMATION);
-  const newState = { ...state, step: nextStep };
-  saveBookingDraft(newState);
+  const newState = saveBookingDraft({ ...state, step: nextStep });
   return { state: newState, errors: [] };
+}
+
+/**
+ * Move wizard one step back.
+ * @param {object} state
+ * @returns {object}
+ */
+export function retreatStep(state) {
+  const previousStep = Math.max(state.step - 1, WIZARD_STEPS.ITEM_SELECTION);
+  return saveBookingDraft({ ...state, step: previousStep });
 }
 
 /**
@@ -72,16 +129,43 @@ export function advanceStep(state) {
  */
 export function validateStep(state, step) {
   const errors = [];
+
   if (step === WIZARD_STEPS.ITEM_SELECTION && state.items.length === 0) {
     errors.push('Please select at least one service item.');
   }
-  if (step === WIZARD_STEPS.ADDRESS_VALIDATION && !state.address) {
-    errors.push('Please provide a valid service address.');
+
+  if (step === WIZARD_STEPS.ADDRESS_VALIDATION) {
+    const { street, number, neighborhood, city } = state.address ?? {};
+    if (!street?.trim() || !number?.trim() || !neighborhood?.trim() || !city?.trim()) {
+      errors.push('Please provide a complete service address.');
+    }
   }
-  if (step === WIZARD_STEPS.DATETIME_CHOICE && (!state.date || !state.time)) {
-    errors.push('Please select a date and time.');
+
+  if (step === WIZARD_STEPS.DATETIME_CHOICE) {
+    if (!state.customer?.name?.trim() || !state.customer?.email?.trim()) {
+      errors.push('Please provide customer name and email.');
+    }
+    if (!state.date || !state.time) {
+      errors.push('Please select a date and time.');
+    }
   }
+
   return errors;
+}
+
+/**
+ * Progress percentage by current step.
+ * @param {number} step
+ * @returns {number}
+ */
+export function getWizardProgress(step) {
+  const clamped = Math.min(Math.max(step, WIZARD_STEPS.ITEM_SELECTION), WIZARD_STEPS.CONFIRMATION);
+  return Math.round((clamped / WIZARD_STEPS.CONFIRMATION) * 100);
+}
+
+/** Clear persisted booking draft. */
+export function resetBookingDraft() {
+  clearSession(BOOKING_DRAFT_KEY);
 }
 
 // ── Stubs for Week 7 ─────────────────────────────────────────────────────────

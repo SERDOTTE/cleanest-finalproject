@@ -1,19 +1,44 @@
 import { submitContact } from '../modules/api.mjs';
-import { saveSession, loadSession, clearSession } from '../modules/storage.mjs';
+import { clearSession } from '../modules/storage.mjs';
+import {
+  WIZARD_STEPS,
+  createBookingState,
+  loadBookingDraft,
+  updateBookingState,
+  advanceStep,
+  retreatStep,
+  getWizardProgress,
+  validateStep,
+  resetBookingDraft,
+} from '../modules/booking.mjs';
+import { BASE_PRICES, calculateQuote, formatCurrency } from '../modules/calculator.mjs';
 
-const SERVICE_OPTIONS = [
-  'Waterproofing',
-  'Sofa Cleaning',
-  'Mattress Cleaning',
-  'Internal Cleaning of automobiles',
-  'Leather Hydration',
-  'Carpet Cleaning',
+const STEP_LABELS = {
+  [WIZARD_STEPS.ITEM_SELECTION]: 'Step 1 of 4 - Item Selection',
+  [WIZARD_STEPS.ADDRESS_VALIDATION]: 'Step 2 of 4 - Address Validation',
+  [WIZARD_STEPS.DATETIME_CHOICE]: 'Step 3 of 4 - Date & Time',
+  [WIZARD_STEPS.CONFIRMATION]: 'Step 4 of 4 - Confirmation',
+};
+
+const SIZE_OPTIONS = [
+  { value: 'small', label: 'Small' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'large', label: 'Large' },
+  { value: 'xlarge', label: 'X-Large' },
+];
+
+const SOIL_OPTIONS = [
+  { value: 'light', label: 'Light' },
+  { value: 'moderate', label: 'Moderate' },
+  { value: 'heavy', label: 'Heavy' },
 ];
 
 export function renderContact() {
-  const checkboxes = SERVICE_OPTIONS.map(
-    (s) => `<label><input type="checkbox" name="service" value="${s}"> ${s}</label><br>`
-  ).join('');
+  const serviceOptions = Object.keys(BASE_PRICES)
+    .map((service) => `<option value="${service}">${service}</option>`)
+    .join('');
+  const sizeOptions = SIZE_OPTIONS.map((option) => `<option value="${option.value}">${option.label}</option>`).join('');
+  const soilOptions = SOIL_OPTIONS.map((option) => `<option value="${option.value}">${option.label}</option>`).join('');
 
   return `
     <section class="hero">
@@ -22,137 +47,341 @@ export function renderContact() {
         <p>"Cleaning that renews, upholstery that enchants!"</p>
       </div>
     </section>
+
     <main class="page-contact">
       <h1>Contact and Scheduling</h1>
       <div id="recovery-banner" class="recovery-banner" style="display:none;" role="alert">
-        Welcome back! We restored your previous information.
+        Welcome back! We restored your previous booking progress.
       </div>
-      <div class="contact-container">
-        <div class="contact-form">
-          <form id="contactForm" novalidate>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="phone">Phone:</label>
-            <input type="tel" id="phone" name="phone">
-
-            <p>Services:</p>
-            <div>${checkboxes}</div>
-          </form>
-          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+      <section class="booking-wizard" aria-labelledby="wizard-title">
+        <h2 id="wizard-title">Booking Wizard</h2>
+        <p id="wizard-step-label" class="wizard-step-label"></p>
+        <div class="wizard-progress" aria-hidden="true">
+          <div id="wizard-progress-bar" class="wizard-progress__bar"></div>
         </div>
 
-        <div class="contact-schedule">
-          <h2>Schedule our visit</h2>
-          <p>Select the day and enter the time:</p>
-          <div class="date-time-container">
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date">
-            <label for="time">Time:</label>
-            <input type="time" id="time" name="time">
-            <button class="confirm" type="button">Confirm Date &amp; Time</button>
-            <div id="confirmed-slot" class="confirmed-slot" aria-live="polite"></div>
+        <section class="wizard-step" data-step="1">
+          <h3>Select service items</h3>
+          <div class="wizard-row">
+            <div>
+              <label for="serviceType">Service</label>
+              <select id="serviceType">${serviceOptions}</select>
+            </div>
+            <div>
+              <label for="serviceSize">Size</label>
+              <select id="serviceSize">${sizeOptions}</select>
+            </div>
+            <div>
+              <label for="soilDepth">Soil level</label>
+              <select id="soilDepth">${soilOptions}</select>
+            </div>
           </div>
+          <button id="add-service-item" type="button" class="confirm">Add Item</button>
+          <ul id="selected-items" class="selected-items"></ul>
 
-          <h3>Address</h3>
-          <label for="address">Street:</label>
-          <input type="text" id="address" name="address" form="contactForm">
-          <label for="number">Number:</label>
-          <input type="text" id="number" name="number" form="contactForm">
-          <label for="neighborhood">Neighborhood:</label>
-          <input type="text" id="neighborhood" name="neighborhood" form="contactForm">
-          <label for="city">City:</label>
-          <input type="text" id="city" name="city" form="contactForm">
+          <div class="quote-summary">
+            <label for="distanceKm">Distance from HQ (km)</label>
+            <input id="distanceKm" type="number" min="0" step="0.1">
+            <p>Subtotal: <strong id="quote-subtotal">${formatCurrency(0)}</strong></p>
+            <p>Distance fee: <strong id="quote-distance-fee">${formatCurrency(0)}</strong></p>
+            <p>Total: <strong id="quote-total">${formatCurrency(0)}</strong></p>
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="2" hidden>
+          <h3>Address validation</h3>
+          <div class="address-fields">
+            <label for="address">Street</label>
+            <input type="text" id="address">
+            <label for="number">Number</label>
+            <input type="text" id="number">
+            <label for="neighborhood">Neighborhood</label>
+            <input type="text" id="neighborhood">
+            <label for="city">City</label>
+            <input type="text" id="city">
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="3" hidden>
+          <h3>Date and customer info</h3>
+          <div class="address-fields">
+            <label for="name">Name</label>
+            <input type="text" id="name">
+            <label for="email">Email</label>
+            <input type="email" id="email">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone">
+            <label for="date">Date</label>
+            <input type="date" id="date">
+            <label for="time">Time</label>
+            <input type="time" id="time">
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="4" hidden>
+          <h3>Confirmation</h3>
+          <div id="booking-summary" class="booking-summary"></div>
+        </section>
+
+        <div class="wizard-actions">
+          <button id="wizard-prev" type="button" class="confirm-prev">Back</button>
+          <button id="wizard-next" type="button" class="confirm-next">Next</button>
+          <button id="submit-booking" type="button" class="submit-btn">Submit Booking</button>
         </div>
-      </div>
 
-      <button type="button" class="submit-btn">Submit</button>
+        <p id="form-feedback" class="form-feedback" aria-live="polite"></p>
+      </section>
     </main>
   `;
 }
 
 export function initContact() {
-  let confirmedDate = '';
-  let confirmedTime = '';
+  let state = loadBookingDraft();
 
-  // Restore abandoned draft
-  const draft = loadSession('contactDraft');
-  if (draft) {
-    const form = document.getElementById('contactForm');
-    if (form) {
-      if (draft.name) form.name.value = draft.name;
-      if (draft.email) form.email.value = draft.email;
-      if (draft.phone) form.phone.value = draft.phone;
-      const banner = document.getElementById('recovery-banner');
-      if (banner) banner.style.display = 'block';
-    }
+  if (hasRecoverableDraft(state)) {
+    const banner = document.getElementById('recovery-banner');
+    if (banner) banner.style.display = 'block';
   }
 
-  // Auto-save draft on input
-  document.getElementById('contactForm')?.addEventListener('input', () => {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-    saveSession('contactDraft', {
-      name: form.name.value,
-      email: form.email.value,
-      phone: form.phone.value,
-    });
+  populateFieldsFromState(state);
+  updateWizardUI(state);
+
+  document.getElementById('add-service-item')?.addEventListener('click', () => {
+    const service = getInputValue('serviceType');
+    const size = getInputValue('serviceSize');
+    const soilDepth = getInputValue('soilDepth');
+    if (!service || !size || !soilDepth) {
+      showFeedback('Please complete service, size, and soil level.', 'error');
+      return;
+    }
+
+    const items = [...state.items, { service, size, soilDepth }];
+    const quote = calculateQuote(items, state.distanceKm);
+    state = updateBookingState(state, { items, quote });
+    updateWizardUI(state);
+    showFeedback('Service item added.', 'success');
   });
 
-  // Confirm date/time
-  document.querySelector('.confirm')?.addEventListener('click', () => {
-    confirmedDate = document.getElementById('date')?.value ?? '';
-    confirmedTime = document.getElementById('time')?.value ?? '';
-    const slotEl = document.getElementById('confirmed-slot');
-    if (confirmedDate && confirmedTime) {
-      if (slotEl) slotEl.textContent = `Confirmed: ${confirmedDate} at ${confirmedTime}`;
-    } else {
-      showFeedback('Please select both date and time.', 'error');
+  document.getElementById('selected-items')?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-remove-index]');
+    if (!button) return;
+
+    const index = Number(button.dataset.removeIndex);
+    if (!Number.isInteger(index)) return;
+
+    const items = state.items.filter((_item, itemIndex) => itemIndex !== index);
+    const quote = items.length ? calculateQuote(items, state.distanceKm) : null;
+    state = updateBookingState(state, { items, quote });
+    updateWizardUI(state);
+  });
+
+  document.querySelector('.booking-wizard')?.addEventListener('input', (event) => {
+    state = syncStateFromForm(state);
+    if (event.target.id === 'distanceKm') {
+      updateQuoteSummary(state.quote);
     }
   });
 
-  // Submit
-  document.querySelector('.submit-btn')?.addEventListener('click', async () => {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
+  document.getElementById('wizard-next')?.addEventListener('click', () => {
+    state = syncStateFromForm(state);
+    const result = advanceStep(state);
+    state = result.state;
+    if (result.errors.length) {
+      showFeedback(result.errors[0], 'error');
+      return;
+    }
+    updateWizardUI(state);
+    showFeedback('', 'info');
+  });
 
-    if (!form.name.value.trim() || !form.email.value.trim()) {
-      showFeedback('Name and email are required.', 'error');
+  document.getElementById('wizard-prev')?.addEventListener('click', () => {
+    state = retreatStep(syncStateFromForm(state));
+    updateWizardUI(state);
+    showFeedback('', 'info');
+  });
+
+  document.getElementById('submit-booking')?.addEventListener('click', async () => {
+    state = syncStateFromForm(state);
+    const stepErrors = [
+      ...validateStep(state, WIZARD_STEPS.ITEM_SELECTION),
+      ...validateStep(state, WIZARD_STEPS.ADDRESS_VALIDATION),
+      ...validateStep(state, WIZARD_STEPS.DATETIME_CHOICE),
+    ];
+    if (stepErrors.length) {
+      showFeedback(stepErrors[0], 'error');
       return;
     }
 
     const payload = {
-      name: form.name.value.trim(),
-      email: form.email.value.trim(),
-      phone: form.phone.value.trim(),
-      services: [...form.querySelectorAll('input[name="service"]:checked')].map((cb) => cb.value),
-      date: confirmedDate || document.getElementById('date')?.value || '',
-      time: confirmedTime || document.getElementById('time')?.value || '',
-      address: document.getElementById('address')?.value.trim() || '',
-      number: document.getElementById('number')?.value.trim() || '',
-      neighborhood: document.getElementById('neighborhood')?.value.trim() || '',
-      city: document.getElementById('city')?.value.trim() || '',
+      name: state.customer.name,
+      email: state.customer.email,
+      phone: state.customer.phone,
+      services: state.items.map((item) => item.service),
+      date: state.date,
+      time: state.time,
+      address: state.address.street,
+      number: state.address.number,
+      neighborhood: state.address.neighborhood,
+      city: state.address.city,
+      items: state.items,
+      quote: state.quote,
+      distanceKm: state.distanceKm,
     };
 
     try {
       const result = await submitContact(payload);
       showFeedback(result.message ?? 'Booking submitted successfully!', 'success');
-      form.reset();
+      resetBookingDraft();
       clearSession('contactDraft');
-      confirmedDate = '';
-      confirmedTime = '';
-      const slotEl = document.getElementById('confirmed-slot');
-      if (slotEl) slotEl.textContent = '';
+      state = createBookingState();
+      populateFieldsFromState(state);
+      updateWizardUI(state);
       const banner = document.getElementById('recovery-banner');
       if (banner) banner.style.display = 'none';
-    } catch (err) {
+    } catch (error) {
       showFeedback('Failed to submit. Please try again or call us directly.', 'error');
-      console.error('[Contact] Submit error:', err);
+      console.error('[Contact] Submit error:', error);
     }
   });
+}
+
+function syncStateFromForm(state) {
+  const distanceValue = Number(getInputValue('distanceKm') || 0);
+  const distanceKm = Number.isFinite(distanceValue) ? Math.max(0, distanceValue) : 0;
+  const quote = state.items.length ? calculateQuote(state.items, distanceKm) : null;
+
+  return updateBookingState(state, {
+    distanceKm,
+    quote,
+    address: {
+      street: getInputValue('address'),
+      number: getInputValue('number'),
+      neighborhood: getInputValue('neighborhood'),
+      city: getInputValue('city'),
+    },
+    customer: {
+      name: getInputValue('name'),
+      email: getInputValue('email'),
+      phone: getInputValue('phone'),
+    },
+    date: getInputValue('date'),
+    time: getInputValue('time'),
+  });
+}
+
+function updateWizardUI(state) {
+  document.querySelectorAll('.wizard-step').forEach((stepEl) => {
+    const isActive = Number(stepEl.dataset.step) === state.step;
+    stepEl.hidden = !isActive;
+  });
+
+  const stepLabel = document.getElementById('wizard-step-label');
+  if (stepLabel) stepLabel.textContent = STEP_LABELS[state.step] ?? '';
+
+  const progressBar = document.getElementById('wizard-progress-bar');
+  if (progressBar) progressBar.style.width = `${getWizardProgress(state.step)}%`;
+
+  const prevBtn = document.getElementById('wizard-prev');
+  const nextBtn = document.getElementById('wizard-next');
+  const submitBtn = document.getElementById('submit-booking');
+  if (prevBtn) prevBtn.style.display = state.step > WIZARD_STEPS.ITEM_SELECTION ? 'inline-flex' : 'none';
+  if (nextBtn) nextBtn.style.display = state.step < WIZARD_STEPS.CONFIRMATION ? 'inline-flex' : 'none';
+  if (submitBtn) submitBtn.style.display = state.step === WIZARD_STEPS.CONFIRMATION ? 'inline-flex' : 'none';
+
+  renderSelectedItems(state.items);
+  updateQuoteSummary(state.quote);
+  renderConfirmation(state);
+}
+
+function renderSelectedItems(items) {
+  const listEl = document.getElementById('selected-items');
+  if (!listEl) return;
+
+  if (!items.length) {
+    listEl.innerHTML = '<li>No items selected yet.</li>';
+    return;
+  }
+
+  listEl.innerHTML = items
+    .map(
+      (item, index) => `
+        <li>
+          <span>${escapeHtml(item.service)} - ${escapeHtml(item.size)} - ${escapeHtml(item.soilDepth)}</span>
+          <button type="button" data-remove-index="${index}" aria-label="Remove item">Remove</button>
+        </li>
+      `
+    )
+    .join('');
+}
+
+function updateQuoteSummary(quote) {
+  const subtotalEl = document.getElementById('quote-subtotal');
+  const distanceEl = document.getElementById('quote-distance-fee');
+  const totalEl = document.getElementById('quote-total');
+  if (!subtotalEl || !distanceEl || !totalEl) return;
+
+  subtotalEl.textContent = formatCurrency(quote?.subtotal ?? 0);
+  distanceEl.textContent = formatCurrency(quote?.distanceFee ?? 0);
+  totalEl.textContent = formatCurrency(quote?.total ?? 0);
+}
+
+function renderConfirmation(state) {
+  const summaryEl = document.getElementById('booking-summary');
+  if (!summaryEl) return;
+
+  const itemLines = state.items
+    .map((item) => `${item.service} (${item.size}, ${item.soilDepth})`)
+    .join(', ');
+
+  summaryEl.innerHTML = `
+    <p><strong>Customer:</strong> ${escapeHtml(state.customer.name || '-')}</p>
+    <p><strong>Email:</strong> ${escapeHtml(state.customer.email || '-')}</p>
+    <p><strong>Phone:</strong> ${escapeHtml(state.customer.phone || '-')}</p>
+    <p><strong>Services:</strong> ${escapeHtml(itemLines || '-')}</p>
+    <p><strong>Address:</strong> ${escapeHtml(
+      [state.address.street, state.address.number, state.address.neighborhood, state.address.city]
+        .filter(Boolean)
+        .join(', ') || '-'
+    )}</p>
+    <p><strong>Schedule:</strong> ${escapeHtml(state.date && state.time ? `${state.date} ${state.time}` : '-')}</p>
+    <p><strong>Quote total:</strong> ${formatCurrency(state.quote?.total ?? 0)}</p>
+  `;
+}
+
+function populateFieldsFromState(state) {
+  setInputValue('distanceKm', state.distanceKm ? String(state.distanceKm) : '');
+  setInputValue('address', state.address.street);
+  setInputValue('number', state.address.number);
+  setInputValue('neighborhood', state.address.neighborhood);
+  setInputValue('city', state.address.city);
+  setInputValue('name', state.customer.name);
+  setInputValue('email', state.customer.email);
+  setInputValue('phone', state.customer.phone);
+  setInputValue('date', state.date);
+  setInputValue('time', state.time);
+}
+
+function hasRecoverableDraft(state) {
+  return !!(
+    state.items.length
+    || state.customer.name
+    || state.customer.email
+    || state.address.street
+    || state.date
+    || state.time
+  );
+}
+
+function getInputValue(id) {
+  const input = document.getElementById(id);
+  if (!input) return '';
+  return String(input.value ?? '').trim();
+}
+
+function setInputValue(id, value) {
+  const input = document.getElementById(id);
+  if (input) input.value = value ?? '';
 }
 
 function showFeedback(message, type = 'info') {
@@ -160,4 +389,13 @@ function showFeedback(message, type = 'info') {
   if (!el) return;
   el.textContent = message;
   el.className = `form-feedback form-feedback--${type}`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

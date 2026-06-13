@@ -15,14 +15,14 @@ export const BASE_PRICES = {
   'Carpet Cleaning': 130,
 };
 
-export const SIZE_MULTIPLIERS = {
+export const SIZE_MULTIPLIERS = { // Small, Medium, Large, X-Large size categories
   small: 1.0,
   medium: 1.3,
   large: 1.6,
   xlarge: 2.0,
 };
 
-export const SOIL_MULTIPLIERS = {
+export const SOIL_MULTIPLIERS = { // Light, Moderate, Heavy soil levels 
   light: 1.0,
   moderate: 1.2,
   heavy: 1.5,
@@ -54,6 +54,18 @@ export function calculateQuote(items = [], distanceKm = 0) {
   const total = round2(subtotal + distanceFee);
 
   return { items: breakdown, subtotal, distanceFee, total };
+}
+
+/**
+ * Format USD price values for UI rendering.
+ * @param {number} value
+ * @returns {string}
+ */
+export function formatCurrency(value) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(Number(value) || 0);
 }
 
 function round2(n) {

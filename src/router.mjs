@@ -1,4 +1,4 @@
-import { renderHome } from './pages/home.mjs';
+import { renderHome, initHome } from './pages/home.mjs';
 import { renderServices, initServices } from './pages/services.mjs';
 import { renderAbout } from './pages/about.mjs';
 import { renderContact, initContact } from './pages/contact.mjs';
@@ -6,7 +6,7 @@ import { renderAdmin, initAdmin } from './pages/admin.mjs';
 
 /** Route map: hash → { render, init } */
 const routes = {
-  home: { render: renderHome, init: null },
+  home: { render: renderHome, init: initHome },
   services: { render: renderServices, init: initServices },
   about: { render: renderAbout, init: null },
   contact: { render: renderContact, init: initContact },

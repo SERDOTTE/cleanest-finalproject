@@ -37,8 +37,18 @@ export function clearSession(key) {
  * @returns {boolean} true if a draft was found
  */
 export function recoverSession() {
-  const draft = loadSession('contactDraft');
-  return !!(draft && (draft.name || draft.email));
+  const contactDraft = loadSession('contactDraft');
+  const bookingDraft = loadSession('bookingDraft');
+
+  const hasContactDraft = !!(contactDraft && (contactDraft.name || contactDraft.email));
+  const hasBookingDraft = !!(
+    bookingDraft &&
+    ((Array.isArray(bookingDraft.items) && bookingDraft.items.length > 0)
+      || bookingDraft.customer?.name
+      || bookingDraft.customer?.email)
+  );
+
+  return hasContactDraft || hasBookingDraft;
 }
 
 /** Persist user theme preference. */

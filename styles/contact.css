@@ -161,24 +161,21 @@
   color: #f8f8f8;
 }
 
-/* Responsivo: empilha data e hora em telas pequenas */
-@media (max-width: 600px) {
-  .contact-schedule-row {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
 .address-fields {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 50%;
 }
 
 .address-fields label,
 .address-fields input {
   width: 100%;
   box-sizing: border-box;
+}
+
+#phone, #date, #time {
+  width: 40%; 
 }
 
 .booking-wizard {
@@ -269,7 +266,7 @@
   margin-top: 20px;
   display: flex;
   gap: 12px;
-  justify-content: flex-end;
+  justify-content: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -309,7 +306,7 @@
   padding: 14px;
 }
 
-@media (max-width: 800px) {
+/* @media (max-width: 800px) {
   .wizard-row {
     grid-template-columns: 1fr;
   }
@@ -318,4 +315,35 @@
     justify-content: stretch;
     flex-direction: column;
   }
+} */
+
+/* Responsivo: empilha data e hora em telas pequenas */
+@media (max-width: 600px) {
+  .contact-schedule-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .address-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  }
+
+.address-fields label,
+.address-fields input {
+  width: 100%;
+  box-sizing: border-box;
+  }
+
+  .wizard-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 }

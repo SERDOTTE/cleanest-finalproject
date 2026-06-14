@@ -74,45 +74,6 @@ h1 {
   }
 }
 
-.weather-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.weather-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 18px;
-}
-
-.weather-info img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  align-self: flex-start;
-  border-radius: 8px;
-}
-
-.weather-data {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  font-family: var(--font-family); /* guarantees the same source */
-  font-size: 1rem;
-}
-
-.card .weather-info {
-  margin-top: 32px;
-}
-
-#temperature {
-  font-weight: bold;
-}
-
 /* Adjust the forecast section to match the font and size of weather-data*/
 .card .forecast-data {
   display: flex;

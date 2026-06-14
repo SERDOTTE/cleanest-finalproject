@@ -1,0 +1,188 @@
+/* ==========================================================================
+   HEADER BASE STYLES
+   ========================================================================== */
+header {
+  position: relative;
+  z-index: 10;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.header__container__limpa {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background: white;
+  color: var(--secondary-color);
+}
+
+.header__limpa {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  margin-left: 20px;
+}
+
+.header__limpa .logo {
+  width: 200px;
+  height: auto;
+  grid-column: 1;
+  justify-self: start;
+}
+
+/* Contact Info Blocks */
+.header__limpa_fone,
+.header__limpa_email {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header__limpa_fone img { width: 70px; }
+.header__limpa_email img { width: 90px; }
+
+.header__limpa_text p {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+  font-family: var(--paragraph-font);
+}
+
+/* ==========================================================================
+   NAVIGATION & ACTIONS BAR
+   ========================================================================== */
+.header__limpa-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  margin: 0;
+  padding: 0 16px;
+  background-color: var(--accent2-color);
+  position: relative;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.navigation {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--paragraph-font);
+  display: flex;
+  flex-direction: row;
+}
+
+nav a {
+  display: block;
+  color: var(--primary-color);
+  text-decoration: none;
+  padding: 1rem;
+}
+
+nav a:hover {
+  color: var(--accent2-color);
+  background-color: var(--secondary-color);
+}
+
+/* Buttons */
+.hamburger-menu,
+.close-menu {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  display: none;
+}
+
+.theme-toggle-btn {
+  margin-left: 18px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #eee;
+  color: #032f53;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ==========================================================================
+   RESPONSIVENESS (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Tablet & Mobile Menu Toggle Breakdown */
+@media (max-width: 900px) {
+  .header__limpa .logo {
+    justify-self: center;
+  }
+
+  .header__limpa-actions {
+    justify-content: space-between; /* Abre espaço para o botão hambúrguer */
+  }
+
+  /* Transforma a lista de links em um menu vertical suspenso */
+  .navigation {
+    display: none; 
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    right: 16px;
+    background: var(--accent2-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(3, 47, 83, 0.18);
+    padding: 20px;
+    z-index: 9999;
+    width: 220px;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  /* Classe dinâmica que será injetada via JavaScript */
+  .navigation.active {
+    display: flex;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+
+  /* Botão de fechar dentro do menu mobile se necessário */
+  .close-menu {
+    display: none; /* Deixado oculto pois o próprio hambúrguer pode alternar, ou mude para 'block' se quiser usá-lo */
+    align-self: flex-end;
+    margin-bottom: 10px;
+  }
+}
+
+/* Small Mobile Devices (Contact Info Stack) */
+@media (max-width: 700px) {
+  .header__limpa {
+    grid-template-columns: 1fr;
+    text-align: center;
+    margin-left: 0;
+    margin-bottom: 1px;
+  }
+
+  .header__limpa_fone,
+  .header__limpa_email {
+    justify-content: center;
+    margin-bottom: 1px;
+  }
+
+  .header__limpa_fone img,
+  .header__limpa_email img {
+    width: 40px;
+    height: auto;
+    object-fit: contain;
+    margin-right: 8px;
+  }
+}

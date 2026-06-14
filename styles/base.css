@@ -243,11 +243,6 @@ footer {
   object-fit: cover;
 }
 
-#lastModified,
-.last_modified {
-  color: yellow;
-}
-
 @media (max-width: 900px) {
   .header__limpa .logo {
     justify-self: center;
@@ -313,15 +308,29 @@ footer {
 
 @media (max-width: 700px) {
   .header__limpa {
+    display: grid;
     grid-template-columns: 1fr;
+    grid-row-gap: 0px;
     text-align: center;
     margin-left: 0;
+    margin-bottom: 1px;
+
   }
 
   .header__limpa_fone,
   .header__limpa_email {
     justify-content: center;
+    margin-bottom: 1px;
   }
+
+  /* Seleciona as imagens apenas dentro dos blocos de fone e email */
+.header__limpa_fone img,
+.header__limpa_email img {
+  width: 40px;          /* Ajuste esse valor para o tamanho que preferir */
+  height: auto;         /* Mantém a proporção correta da altura */
+  object-fit: contain;  /* Garante que a imagem não distorça */
+  margin-right: 8px;    /* Cria um pequeno espaço entre o ícone e o texto ao lado */
+}
 
   footer {
     flex-direction: column;

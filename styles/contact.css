@@ -1,4 +1,4 @@
-/* Exemplo de layout responsivo para duas colunas */
+/* Example of a responsive layout for two columns */
 .contact-container {
   display: flex;
   flex-direction: row;
@@ -21,7 +21,7 @@
   padding: 24px;
 }
 
-/* Responsivo: empilha em telas pequenas */
+/* Responsive: stacks on small screens */
 @media (max-width: 800px) {
   .contact-container {
     flex-direction: column;
@@ -60,7 +60,7 @@
   cursor: pointer;
 }
 
-/* Opcional: destaca o label */
+/* Optional: highlights the label */
 .contact-schedule label[for='date'] {
   font-weight: bold;
   margin-top: 12px;
@@ -121,7 +121,7 @@
   color: #222;
 }
 
-/* Ajuste para os checkboxes do fieldset */
+/* Adjustment for the checkboxes in the fieldset */
 .contact-form fieldset label {
   display: flex;
   align-items: center;
@@ -306,18 +306,7 @@
   padding: 14px;
 }
 
-/* @media (max-width: 800px) {
-  .wizard-row {
-    grid-template-columns: 1fr;
-  }
-
-  .wizard-actions {
-    justify-content: stretch;
-    flex-direction: column;
-  }
-} */
-
-/* Responsivo: empilha data e hora em telas pequenas */
+/* Responsive: stacks date and time on small screens */
 @media (max-width: 600px) {
   .contact-schedule-row {
     flex-direction: column;

@@ -1,5 +1,5 @@
 /**
- * Retorna a estrutura HTML limpa do rodapé
+ * Returns the clean HTML structure of the footer
  * @returns {string} HTML Template string
  */
 export function renderFooter() {
@@ -28,7 +28,7 @@ export function renderFooter() {
 }
 
 /**
- * Inicializa lógicas e dados dinâmicos do rodapé (como o ano atual)
+ *  Initialize dynamic footer logic (such as the current year)
  */
 export function initFooter() {
   const yearEl = document.getElementById('copyrightYear');

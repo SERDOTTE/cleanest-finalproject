@@ -2,6 +2,7 @@ import express from 'express';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import cors from 'cors';
 
+// Configuring the path to the data file, ensuring compatibility between operating systems.
 const app = express();
 const PORT = 3000;
 const DATA_FILE = new URL('./submissions.json', import.meta.url).pathname.replace(

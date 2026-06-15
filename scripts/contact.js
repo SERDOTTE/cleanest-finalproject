@@ -2,7 +2,7 @@ let confirmedDate = '';
 let confirmedTime = '';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Botão Confirm (date/time)
+  // Button Confirm (date/time)
   const confirmBtn = document.querySelector('.confirm');
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function (e) {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Botão Submit (formulário)
+  // Botton Submit (contact form)
   const contactForm = document.getElementById('contactForm');
   const submitBtn = document.querySelector('button[type="submit"][form="contactForm"]');
   if (contactForm && submitBtn) {

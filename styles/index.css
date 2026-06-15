@@ -10,15 +10,15 @@
 .home__container {
   display: flex;
   flex-direction: column;
-  gap: 40px; /* aumenta o espaço entre os três elementos */
+  gap: 40px; /* increases the space between the three elements */
   max-width: 1400px;
-  margin: 40px auto 20px auto; /* centraliza horizontalmente e dá espaço acima */
+  margin: 40px auto 20px auto; /* centers horizontally and gives space above */
   padding: 20px;
   align-items: center;
   box-sizing: border-box;
 }
 
-/* Opcional: Espaço interno e visual para cada bloco de conteúdo */
+/* Optional: internal spacing and visual for each content block */
 .home__container_content {
   width: 100%;
   background: var(--secondary-color);

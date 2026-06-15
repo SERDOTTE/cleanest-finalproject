@@ -1,6 +1,6 @@
 /**
- * Retorna a estrutura HTML limpa do cabeçalho
- * @returns {string} HTML Template string
+ * Returns the clean HTML structure of the header
+* @returns {string} HTML Template string
  */
 export function renderHeader() {
   return `
@@ -43,7 +43,7 @@ export function renderHeader() {
 }
 
 /**
- * Inicializa os comportamentos e eventos do menu hambúrguer do Header
+ * Initialize the behaviors and events of the hamburger menu in the Header
  */
 export function initHeader() {
   const hamburgerBtn = document.querySelector('.hamburger-menu');
@@ -51,23 +51,23 @@ export function initHeader() {
   const navLinks = document.querySelectorAll('.navigation a');
 
   if (!hamburgerBtn || !navigation) {
-    console.warn('[Header] Elementos necessários não foram encontrados no DOM.');
+    console.warn('[Header] Necessary elements were not found in the DOM.');
     return;
   }
 
-  // Alterna abertura e fechamento do menu mobile
+  // Toggle mobile menu open and close
   hamburgerBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     navigation.classList.toggle('active');
     
     if (navigation.classList.contains('active')) {
-      hamburgerBtn.innerHTML = '&times;'; // Ícone de Fechar (X)
+      hamburgerBtn.innerHTML = '&times;'; // Close Icon (X)
     } else {
-      hamburgerBtn.innerHTML = '&#9776;'; // Ícone de Hambúrguer
+      hamburgerBtn.innerHTML = '&#9776;'; // Hamburger Icon
     }
   });
 
-  // Fecha o menu ao clicar em qualquer item de link (importante para SPA)
+  // Close the menu when clicking on any link (important for SPA)
   navLinks.forEach(link => {
     link.addEventListener('click', () => {
       if (navigation.classList.contains('active')) {
@@ -77,7 +77,7 @@ export function initHeader() {
     });
   });
 
-  // Fecha o menu se o usuário clicar em qualquer ponto fora dele
+  // Close the menu if the user clicks anywhere outside of it
   document.addEventListener('click', (e) => {
     if (navigation.classList.contains('active') && !navigation.contains(e.target) && e.target !== hamburgerBtn) {
       navigation.classList.remove('active');

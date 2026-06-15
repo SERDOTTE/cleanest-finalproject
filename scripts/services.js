@@ -17,7 +17,7 @@ function createModal() {
   `;
   document.body.appendChild(modal);
 
-  // Fechar ao clicar no X ou fora do conteúdo
+  // Close modal logic
   modal.querySelector('.service-modal-close').onclick = () => (modal.style.display = 'none');
   modal.onclick = (e) => {
     if (e.target === modal) modal.style.display = 'none';

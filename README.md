@@ -105,10 +105,10 @@ finalproject/
 
 ### Week 6 — Business Logic & Data Persistence
 
-- [ ] `calculator.mjs` — Full pricing wizard UI
-- [ ] `storage.mjs` — Cart abandonment toast/banner
-- [ ] `booking.mjs` — Multi-step wizard with progress bar
-- [ ] Dynamic review hub
+- [x] `calculator.mjs` — Full pricing wizard UI
+- [x] `storage.mjs` — Cart abandonment toast/banner
+- [x] `booking.mjs` — Multi-step wizard with progress bar
+- [x] Dynamic review hub
 
 ### Week 7 — API Integrations & Deployment
 

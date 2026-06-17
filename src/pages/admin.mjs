@@ -10,26 +10,26 @@ export function renderAdmin() {
     </section>
 
     <main class="page-admin">
-      <h1>Admin Panel</h1>
+      <h1>Admin Panel:</h1>
       <p class="admin-subtitle">Monitor recent scheduling requests and customer details.</p>
 
       <section class="admin-stats" aria-label="Dashboard summary">
         <article class="admin-stat-card">
-          <h2>Total Requests</h2>
+          <h2>Total Requests:</h2>
           <p id="admin-total-requests">0</p>
         </article>
         <article class="admin-stat-card">
-          <h2>Requests With Date</h2>
+          <h2>Requests With Date:</h2>
           <p id="admin-dated-requests">0</p>
         </article>
         <article class="admin-stat-card">
-          <h2>Unique Cities</h2>
+          <h2>Cities:</h2>
           <p id="admin-unique-cities">0</p>
         </article>
       </section>
 
       <section class="admin-table-wrap" aria-label="Scheduling requests">
-        <h2>Recent Requests</h2>
+        <h2>Recent Requests:</h2>
         <div id="admin-feedback" class="form-feedback form-feedback--info" aria-live="polite"></div>
         <div class="admin-table-scroll">
           <table class="admin-table">

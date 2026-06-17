@@ -2,7 +2,7 @@ let confirmedDate = '';
 let confirmedTime = '';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Botão Confirm (date/time)
+  // Confirm button (date/time)
   const confirmBtn = document.querySelector('.confirm');
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function (e) {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Botão Submit (formulário)
+  // Submit button (form)
   const contactForm = document.getElementById('contactForm');
   const submitBtn = document.querySelector('button[type="submit"][form="contactForm"]');
   if (contactForm && submitBtn) {
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           contactForm.reset();
         })
         .catch((error) => {
-          alert('Erro ao enviar formulário!');
+          alert('Error submitting form!');
           console.error(error);
         });
     });

@@ -89,7 +89,7 @@ export function renderContact() {
           <ul id="selected-items" class="selected-items"></ul>
 
           <div class="quote-summary">
-            <label for="distanceKm">Distance from HQ (km)</label>
+            <label for="distanceKm">Distance from HQ (km):</label>
             <input id="distanceKm" type="number" min="0" step="0.1">
             <p>Subtotal: <strong id="quote-subtotal">${formatCurrency(0)}</strong></p>
             <p>Distance fee: <strong id="quote-distance-fee">${formatCurrency(0)}</strong></p>

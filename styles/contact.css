@@ -1,4 +1,4 @@
-/* Exemplo de layout responsivo para duas colunas */
+/* Example of a responsive layout for two columns.*/
 .contact-container {
   display: flex;
   flex-direction: row;
@@ -19,15 +19,6 @@
   /* background: #fff; */
   border-radius: 12px;
   padding: 24px;
-}
-
-/* Responsivo: empilha em telas pequenas */
-@media (max-width: 800px) {
-  .contact-container {
-    flex-direction: column;
-    gap: 18px;
-    padding: 16px 4px;
-  }
 }
 
 .contact-schedule {
@@ -60,7 +51,7 @@
   cursor: pointer;
 }
 
-/* Opcional: destaca o label */
+/* Optional: highlights the label */
 .contact-schedule label[for='date'] {
   font-weight: bold;
   margin-top: 12px;
@@ -121,7 +112,7 @@
   color: #222;
 }
 
-/* Ajuste para os checkboxes do fieldset */
+/* Adjustment for the checkboxes in the fieldset */
 .contact-form fieldset label {
   display: flex;
   align-items: center;
@@ -319,6 +310,10 @@ button.confirm:hover {
   padding: 14px;
 }
 
+#distanceKm {
+  max-width: 60px;
+}  
+
 .wizard-actions {
   margin-top: 20px;
   display: flex;
@@ -363,7 +358,7 @@ button.confirm:hover {
   padding: 14px;
 }
 
-/* Responsivo: empilha data e hora em telas pequenas */
+/* Responsive: stacks date and time on small screens. */
 @media (max-width: 600px) {
   .contact-schedule-row {
     flex-direction: column;
@@ -397,4 +392,13 @@ button.confirm:hover {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+}
+
+/* Responsive: stacks on small screens */
+@media (max-width: 800px) {
+  .contact-container {
+    flex-direction: column;
+    gap: 18px;
+    padding: 16px 4px;
+  }
 }

@@ -29,7 +29,7 @@ function getCalendarClient() {
 
   if (!clientId || !clientSecret || !redirectUri || !refreshToken) {
     throw createAppError(
-      'Google Calendar nao configurado. Defina GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI e GOOGLE_REFRESH_TOKEN.',
+      'Google Calendar not configured. Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, and GOOGLE_REFRESH_TOKEN.',
       'CALENDAR_NOT_CONFIGURED'
     );
   }

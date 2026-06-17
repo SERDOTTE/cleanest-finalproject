@@ -1,4 +1,4 @@
-import { services } from '../data/services.mjs';
+import { services } from '../../data/services-list.mjs';
 
 export function renderServices() {
   const cards = services

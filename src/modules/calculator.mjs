@@ -72,6 +72,5 @@ function round2(n) {
   return Math.round(n * 100) / 100;
 }
 
-// ── Stubs for Week 6 ─────────────────────────────────────────────────────────
 
 // export function generateQuotePDF(quoteData) { ... }

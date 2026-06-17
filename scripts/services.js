@@ -2,7 +2,7 @@ import { services } from '../data/services-list.mjs';
 
 const showHere = document.getElementById('services-list');
 
-// Função para criar o modal (apenas uma vez)
+// Function to create the modal (only once)
 function createModal() {
   if (document.getElementById('service-modal')) return;
   const modal = document.createElement('div');
@@ -17,7 +17,7 @@ function createModal() {
   `;
   document.body.appendChild(modal);
 
-  // Fechar ao clicar no X ou fora do conteúdo
+  // Close when clicking the X or outside the content
   modal.querySelector('.service-modal-close').onclick = () => (modal.style.display = 'none');
   modal.onclick = (e) => {
     if (e.target === modal) modal.style.display = 'none';

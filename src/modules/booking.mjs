@@ -167,7 +167,4 @@ export function resetBookingDraft() {
   clearSession(BOOKING_DRAFT_KEY);
 }
 
-// ── Stubs for Week 7 ─────────────────────────────────────────────────────────
 
-// export async function getAvailableSlots(date) { ... }
-// export async function confirmBooking(state) { ... }

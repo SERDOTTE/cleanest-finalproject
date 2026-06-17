@@ -323,13 +323,13 @@ footer {
     margin-bottom: 1px;
   }
 
-  /* Seleciona as imagens apenas dentro dos blocos de fone e email */
+  /* Select the images only within the phone and email blocks. */
 .header__limpa_fone img,
 .header__limpa_email img {
-  width: 40px;          /* Ajuste esse valor para o tamanho que preferir */
-  height: auto;         /* Mantém a proporção correta da altura */
-  object-fit: contain;  /* Garante que a imagem não distorça */
-  margin-right: 8px;    /* Cria um pequeno espaço entre o ícone e o texto ao lado */
+  width: 40px;          /* Adjust this value to the desired size */
+  height: auto;         /* Maintains the correct height proportion */
+  object-fit: contain;  /* Ensures the image does not distort */
+  margin-right: 8px;    /* Creates a small space between the icon and the text next to it */
 }
 
   footer {

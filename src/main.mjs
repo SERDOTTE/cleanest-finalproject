@@ -9,7 +9,7 @@ import '../styles/contact.css';
 import '../styles/admin.css';
 import '../styles/animations.css';
 
-// Importa tanto a renderização do HTML quanto os eventos do Header
+// Both HTML rendering and Header events are important.
 import { renderHeader, initHeader } from './pages/header.mjs'; 
 import { renderFooter, initFooter } from './pages/footer.mjs';
 import { initTheme } from './modules/ui/theme.mjs';

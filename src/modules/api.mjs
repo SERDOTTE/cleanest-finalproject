@@ -61,7 +61,7 @@ export function getSubmissions() {
 }
 
 /**
- * Busca endereco pelo CEP usando ViaCEP (API publica gratuita).
+ * Search for an address by postal code using ViaCEP (a free public API).
  * @param {string} cep
  * @returns {Promise<{ street: string, neighborhood: string, city: string, state: string, zipCode: string }>}
  */
@@ -91,7 +91,7 @@ export async function fetchAddressByCep(cep) {
 }
 
 /**
- * Consulta disponibilidade de horario no Google Calendar via backend.
+ * Check availability on Google Calendar via backend.
  * @param {{ start: string, end: string }} payload
  */
 export function getCalendarAvailability(payload) {
@@ -102,7 +102,7 @@ export function getCalendarAvailability(payload) {
 }
 
 /**
- * Cria evento de agendamento no Google Calendar via backend.
+ * Create a booking event on Google Calendar via backend.
  * @param {object} payload
  */
 export function createCalendarBooking(payload) {

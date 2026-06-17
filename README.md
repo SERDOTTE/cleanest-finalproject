@@ -101,19 +101,4 @@ finalproject/
 
 ---
 
-## Roadmap (per project proposal)
 
-### Week 6 — Business Logic & Data Persistence
-
-- [x] `calculator.mjs` — Full pricing wizard UI
-- [x] `storage.mjs` — Cart abandonment toast/banner
-- [x] `booking.mjs` — Multi-step wizard with progress bar
-- [x] Dynamic review hub
-
-### Week 7 — API Integrations & Deployment
-
-- [x] `api.mjs` — ViaCEP lookup + service area notice
-- [x] `api.mjs` — Google Calendar availability + event creation
-- [ ] Automatic PDF quote generator
-- [ ] Animations polish
-- [ ] Deployment to Vercel

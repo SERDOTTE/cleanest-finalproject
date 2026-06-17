@@ -265,7 +265,7 @@ export function initContact() {
       const dateTimeRange = getDateTimeRange(state.date, state.time, estimateDurationMinutes(state.items.length));
       const availability = await getCalendarAvailability(dateTimeRange);
       if (availability.isBusy) {
-        showFeedback('Horario indisponivel. Escolha outro horario para agendar.', 'error');
+        showFeedback('Time slot unavailable. Please choose another time to schedule.', 'error');
         return;
       }
 
@@ -285,8 +285,13 @@ export function initContact() {
       });
 
       const result = await submitContact(payload);
+      const calendarNote = calendarResult?.skipped
+        ? ' (Calendar integration pending configuration.)'
+        : calendarResult?.htmlLink
+          ? ` Event created: ${calendarResult.htmlLink}`
+          : '';
       showFeedback(
-        result.message ?? `Booking submitted successfully! Evento criado: ${calendarResult.htmlLink ?? 'Google Calendar'}`,
+        (result.message ?? 'Booking submitted successfully!') + calendarNote,
         'success'
       );
       resetBookingDraft();
@@ -297,7 +302,34 @@ export function initContact() {
       const banner = document.getElementById('recovery-banner');
       if (banner) banner.style.display = 'none';
     } catch (error) {
-      showFeedback('Failed to submit. Please try again or call us directly.', 'error');
+      const code = error?.code ?? '';
+      const status = error?.status ?? 0;
+
+      if (code === 'CALENDAR_NOT_CONFIGURED') {
+        showFeedback(
+          'Booking temporarily unavailable — the server integration is not fully configured yet. Please call us directly to schedule.',
+          'error'
+        );
+      } else if (status === 0 || error instanceof TypeError) {
+        // Network error: server is offline or unreachable
+        showFeedback(
+          'Could not reach the server. Please check your connection or call us directly.',
+          'error'
+        );
+      } else if (code === 'INVALID_DATE_RANGE' || status === 400) {
+        showFeedback(
+          'Invalid date or time selected. Please go back and choose a valid date and time.',
+          'error'
+        );
+      } else if (code === 'CALENDAR_AVAILABILITY_ERROR' || code === 'CALENDAR_BOOKING_ERROR') {
+        showFeedback(
+          'There was a problem connecting to the scheduling service. Please try again or call us directly.',
+          'error'
+        );
+      } else {
+        showFeedback('Failed to submit. Please try again or call us directly.', 'error');
+      }
+
       console.error('[Contact] Submit error:', error);
     }
   });

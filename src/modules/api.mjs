@@ -19,7 +19,21 @@ async function apiFetch(path, options = {}) {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`API ${options.method ?? 'GET'} ${path} → ${res.status}: ${text}`);
+    let payload = null;
+
+    try {
+      payload = text ? JSON.parse(text) : null;
+    } catch {
+      payload = null;
+    }
+
+    const error = new Error(
+      payload?.message || `API ${options.method ?? 'GET'} ${path} → ${res.status}: ${text}`
+    );
+    error.status = res.status;
+    error.code = payload?.code || null;
+    error.payload = payload;
+    throw error;
   }
   return res.json();
 }

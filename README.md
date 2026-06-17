@@ -60,7 +60,7 @@ finalproject/
 │   │   ├── about.mjs       ← About Us section
 │   │   └── contact.mjs     ← Contact form + scheduling
 │   ├── modules/
-│   │   ├── api.mjs         ← Centralized fetch (+ stubs for Maps/Calendar)
+│   │   ├── api.mjs         ← Centralized fetch (ViaCEP + Calendar endpoints)
 │   │   ├── storage.mjs     ← localStorage manager + session recovery
 │   │   ├── calculator.mjs  ← Pricing logic (+ stub for PDF quote)
 │   │   ├── booking.mjs     ← Wizard state + step validation (stubs for Calendar)
@@ -112,8 +112,8 @@ finalproject/
 
 ### Week 7 — API Integrations & Deployment
 
-- [ ] `api.mjs` — Google Maps geocoding + service area check
-- [ ] `api.mjs` — Google Calendar availability + event creation
+- [x] `api.mjs` — ViaCEP lookup + service area notice
+- [x] `api.mjs` — Google Calendar availability + event creation
 - [ ] Automatic PDF quote generator
 - [ ] Animations polish
 - [ ] Deployment to Vercel

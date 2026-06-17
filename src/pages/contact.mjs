@@ -1,4 +1,9 @@
-import { submitContact } from '../modules/api.mjs';
+import {
+  submitContact,
+  fetchAddressByCep,
+  getCalendarAvailability,
+  createCalendarBooking,
+} from '../modules/api.mjs';
 import { clearSession } from '../modules/storage.mjs';
 import {
   WIZARD_STEPS,
@@ -50,6 +55,9 @@ export function renderContact() {
 
     <main class="page-contact">
       <h1>Contact and Scheduling</h1>
+      <p class="service-area-notice">
+        We exclusively serve the cities of Canoas, Porto Alegre, and Esteio.
+      </p>
       <div id="recovery-banner" class="recovery-banner" style="display:none;" role="alert">
         Welcome back! We restored your previous booking progress.
       </div>
@@ -92,6 +100,11 @@ export function renderContact() {
         <section class="wizard-step" data-step="2" hidden>
           <h3>Address validation</h3>
           <div class="address-fields">
+            <label for="zipCode">ZIP Code</label>
+            <div class="cep-row">
+              <input type="text" id="zipCode" inputmode="numeric" maxlength="9" placeholder="00000-000">
+              <button id="lookup-cep" type="button" class="confirm">Search ZIP Code</button>
+            </div>
             <label for="address">Street</label>
             <input type="text" id="address">
             <label for="number">Number</label>
@@ -178,8 +191,26 @@ export function initContact() {
 
   document.querySelector('.booking-wizard')?.addEventListener('input', (event) => {
     state = syncStateFromForm(state);
+    if (event.target.id === 'zipCode') {
+      const formatted = formatCep(getInputValue('zipCode'));
+      setInputValue('zipCode', formatted);
+      state = updateBookingState(state, { address: { zipCode: formatted } });
+    }
     if (event.target.id === 'distanceKm') {
       updateQuoteSummary(state.quote);
+    }
+  });
+
+  document.getElementById('lookup-cep')?.addEventListener('click', async () => {
+    state = syncStateFromForm(state);
+    state = await fillAddressFromCep(state);
+  });
+
+  document.getElementById('zipCode')?.addEventListener('blur', async () => {
+    state = syncStateFromForm(state);
+    const digits = getInputValue('zipCode').replace(/\D/g, '');
+    if (digits.length === 8) {
+      state = await fillAddressFromCep(state);
     }
   });
 
@@ -220,6 +251,7 @@ export function initContact() {
       services: state.items.map((item) => item.service),
       date: state.date,
       time: state.time,
+      zipCode: state.address.zipCode,
       address: state.address.street,
       number: state.address.number,
       neighborhood: state.address.neighborhood,
@@ -230,8 +262,33 @@ export function initContact() {
     };
 
     try {
+      const dateTimeRange = getDateTimeRange(state.date, state.time, estimateDurationMinutes(state.items.length));
+      const availability = await getCalendarAvailability(dateTimeRange);
+      if (availability.isBusy) {
+        showFeedback('Horario indisponivel. Escolha outro horario para agendar.', 'error');
+        return;
+      }
+
+      const calendarResult = await createCalendarBooking({
+        ...payload,
+        start: dateTimeRange.start,
+        end: dateTimeRange.end,
+        fullAddress: [
+          state.address.street,
+          state.address.number,
+          state.address.neighborhood,
+          state.address.city,
+          state.address.zipCode,
+        ]
+          .filter(Boolean)
+          .join(', '),
+      });
+
       const result = await submitContact(payload);
-      showFeedback(result.message ?? 'Booking submitted successfully!', 'success');
+      showFeedback(
+        result.message ?? `Booking submitted successfully! Evento criado: ${calendarResult.htmlLink ?? 'Google Calendar'}`,
+        'success'
+      );
       resetBookingDraft();
       clearSession('contactDraft');
       state = createBookingState();
@@ -255,6 +312,7 @@ function syncStateFromForm(state) {
     distanceKm,
     quote,
     address: {
+      zipCode: formatCep(getInputValue('zipCode')),
       street: getInputValue('address'),
       number: getInputValue('number'),
       neighborhood: getInputValue('neighborhood'),
@@ -339,6 +397,7 @@ function renderConfirmation(state) {
     <p><strong>Email:</strong> ${escapeHtml(state.customer.email || '-')}</p>
     <p><strong>Phone:</strong> ${escapeHtml(state.customer.phone || '-')}</p>
     <p><strong>Services:</strong> ${escapeHtml(itemLines || '-')}</p>
+    <p><strong>ZIP code:</strong> ${escapeHtml(state.address.zipCode || '-')}</p>
     <p><strong>Address:</strong> ${escapeHtml(
       [state.address.street, state.address.number, state.address.neighborhood, state.address.city]
         .filter(Boolean)
@@ -351,6 +410,7 @@ function renderConfirmation(state) {
 
 function populateFieldsFromState(state) {
   setInputValue('distanceKm', state.distanceKm ? String(state.distanceKm) : '');
+  setInputValue('zipCode', state.address.zipCode);
   setInputValue('address', state.address.street);
   setInputValue('number', state.address.number);
   setInputValue('neighborhood', state.address.neighborhood);
@@ -367,10 +427,62 @@ function hasRecoverableDraft(state) {
     state.items.length
     || state.customer.name
     || state.customer.email
+    || state.address.zipCode
     || state.address.street
     || state.date
     || state.time
   );
+}
+
+async function fillAddressFromCep(state) {
+  const zipCode = formatCep(state.address.zipCode || getInputValue('zipCode'));
+  const digits = zipCode.replace(/\D/g, '');
+  if (digits.length !== 8) {
+    showFeedback('Enter a valid 8-digit postal code.', 'error');
+    return state;
+  }
+
+  try {
+    const address = await fetchAddressByCep(digits);
+    const nextState = updateBookingState(state, {
+      address: {
+        zipCode,
+        street: address.street,
+        neighborhood: address.neighborhood,
+        city: address.city,
+      },
+    });
+    setInputValue('zipCode', zipCode);
+    setInputValue('address', address.street);
+    setInputValue('neighborhood', address.neighborhood);
+    setInputValue('city', address.city);
+    showFeedback('Address automatically filled from ZIP code.', 'success');
+    return nextState;
+  } catch (error) {
+    console.error('[Contact] ZIP code lookup error:', error);
+    showFeedback('Unable to locate the provided ZIP code.', 'error');
+    return updateBookingState(state, { address: { zipCode } });
+  }
+}
+
+function formatCep(value) {
+  const digits = String(value ?? '').replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 5) return digits;
+  return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+}
+
+function getDateTimeRange(date, time, durationMinutes) {
+  const start = new Date(`${date}T${time}:00`);
+  const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+  return {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  };
+}
+
+function estimateDurationMinutes(itemCount) {
+  const safeCount = Number.isFinite(itemCount) ? Math.max(1, itemCount) : 1;
+  return safeCount * 90;
 }
 
 function getInputValue(id) {

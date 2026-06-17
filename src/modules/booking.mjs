@@ -2,8 +2,6 @@
  * Booking & Scheduling Module
  * Manages multi-step wizard state and slot validation.
  *
- * TODO (Week 7): Integrate Google Calendar for real-time slot availability.
- * TODO (Week 7): Create calendar event on booking confirmation.
  */
 
 import { saveSession, loadSession, clearSession } from './storage.mjs';
@@ -26,6 +24,7 @@ export function createBookingState() {
     step: WIZARD_STEPS.ITEM_SELECTION,
     items: [], // [{ service, size, soilDepth }]
     address: {
+      zipCode: '',
       street: '',
       number: '',
       neighborhood: '',
@@ -135,8 +134,8 @@ export function validateStep(state, step) {
   }
 
   if (step === WIZARD_STEPS.ADDRESS_VALIDATION) {
-    const { street, number, neighborhood, city } = state.address ?? {};
-    if (!street?.trim() || !number?.trim() || !neighborhood?.trim() || !city?.trim()) {
+    const { zipCode, street, number, neighborhood, city } = state.address ?? {};
+    if (!zipCode?.trim() || !street?.trim() || !number?.trim() || !neighborhood?.trim() || !city?.trim()) {
       errors.push('Please provide a complete service address.');
     }
   }

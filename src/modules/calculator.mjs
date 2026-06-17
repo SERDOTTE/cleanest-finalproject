@@ -2,7 +2,7 @@
  * Quote Calculator Module
  * Business logic and pricing matrix for CleanNest services.
  *
- * TODO (Week 6): Connect distanceKm from Maps API (api.mjs geocodeAddress).
+ * TODO (Week 6): Connect distanceKm from a route-distance provider.
  * TODO (Week 6): Implement PDF quote generator export.
  */
 
@@ -36,7 +36,7 @@ const SURCHARGE_PER_KM = 2.5; // BRL per km
  * Calculate a quote for a list of selected service items.
  *
  * @param {Array<{ service: string, size: string, soilDepth: string }>} items
- * @param {number} [distanceKm=0] - Customer distance from HQ (Maps API)
+ * @param {number} [distanceKm=0] - Customer distance from HQ (manual or API)
  * @returns {{ items: Array, subtotal: number, distanceFee: number, total: number }}
  */
 export function calculateQuote(items = [], distanceKm = 0) {
